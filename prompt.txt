@@ -1,0 +1,867 @@
+# PROJECT: TAPREVIEW
+## Complete Full-Stack NFC & Dynamic QR Management Platform
+
+Act as a senior full-stack software engineer, UI/UX designer, backend architect, database engineer and security specialist.
+
+Build a complete, fully functional, production-ready web application called **TapReview**.
+
+This is a private admin-only web application used by one business owner to manage pre-manufactured NFC Google Review cards.
+
+Do not build a customer-facing SaaS platform. There are no customer accounts, subscriptions or business-owner dashboards.
+
+The application must have a polished frontend, working backend, persistent database, dynamic QR redirection, NFC URL support, card inventory management and scan analytics.
+
+Do not create just a frontend prototype. All buttons, forms, filters, navigation, database operations and business workflows must actually work.
+
+---
+
+# 1. BUSINESS MODEL AND CORE REQUIREMENTS
+
+The business owner manufactures NFC review cards in advance.
+
+Initial inventory: 50 physical NFC cards.
+
+Every physical card has:
+- A unique permanent card ID.
+- A unique preprinted QR code.
+- An NFC chip already installed.
+- A unique TapReview redirect URL.
+
+Example:
+
+Card TR001:
+https://yourdomain.com/r/TR001
+
+Card TR002:
+https://yourdomain.com/r/TR002
+
+Card TR003:
+https://yourdomain.com/r/TR003
+
+The QR code and NFC chip on each card must contain exactly the same URL.
+
+The cards are manufactured before being sold.
+
+The admin visits local businesses personally and carries ready-made cards.
+
+When a business purchases a card, the admin:
+1. Opens the private TapReview dashboard.
+2. Selects an available physical card.
+3. Enters the business name.
+4. Enters its Google Review URL.
+5. Optionally enters phone number, address and notes.
+6. Activates the card.
+7. Delivers the card to the business.
+
+The card immediately redirects customers to that business's Google Review destination.
+
+IMPORTANT BUSINESS RULES:
+
+- One card can belong to only one business.
+- Once activated, a card is permanently assigned.
+- No reassignment of activated cards.
+- No deleting or changing the permanent card ID.
+- No changing the preprinted QR URL.
+- Google Review destination can be updated if the same business changes its review link.
+- Deactivation must be supported.
+- Reactivation is permitted only for the original business.
+- Every business must have a separate card.
+- Never send customers to a business-selection page.
+- No customer login or registration.
+- No artificial or fabricated reviews.
+- Never automatically submit reviews on behalf of customers.
+
+---
+
+# 2. TECHNOLOGY STACK
+
+Frontend:
+- React.js
+- Vite
+- Tailwind CSS
+- React Router
+- Lucide React icons
+- Axios
+- Recharts for analytics charts
+
+Backend:
+- Python 3.13
+- Flask
+- Flask-CORS
+- Supabase Python SDK
+- Python qrcode library
+- Pillow
+- python-dotenv
+- Pydantic or equivalent input validation
+
+Database:
+- Supabase PostgreSQL
+
+Deployment:
+- Frontend: Vercel or equivalent static hosting
+- Backend: Render or equivalent Python hosting
+- Database: Supabase
+- Custom domain connected to the backend redirect service
+
+Keep frontend, backend and database properly separated.
+
+Use environment variables for secrets and configuration.
+
+Never expose Supabase service-role credentials in frontend code.
+
+---
+
+# 3. FRONTEND DESIGN AND USER EXPERIENCE
+
+Create a premium, modern, professional SaaS-style admin dashboard.
+
+Design direction:
+- Clean and minimal.
+- White and very light grey surfaces.
+- Deep navy text.
+- Teal or emerald accent color.
+- Soft shadows.
+- Rounded cards.
+- Consistent spacing.
+- Smooth hover states.
+- Responsive mobile-first design.
+- Professional typography.
+- Clean tables and charts.
+- Avoid excessive gradients and unnecessary animations.
+
+The interface must work well on:
+- Desktop.
+- Laptop.
+- Android smartphones.
+- Tablets.
+
+Application name: TapReview.
+
+Sidebar navigation:
+
+1. Overview
+2. Card Inventory
+3. Businesses
+4. Activate Card
+5. QR Management
+6. Analytics
+7. Settings
+
+Include a collapsible sidebar and mobile navigation drawer.
+
+---
+
+# 4. DASHBOARD OVERVIEW
+
+Create an overview dashboard with real database values.
+
+Display summary cards:
+
+- Total Cards
+- Available Cards
+- Activated Cards
+- Deactivated Cards
+- Total Businesses
+- Total QR Scans
+
+Add:
+- Recent activations.
+- Recent scans.
+- Most scanned cards.
+- Monthly scan trend chart.
+- Inventory utilization chart.
+- Quick Activate Card button.
+- Quick Generate QR Codes button.
+
+All metrics must be calculated from real backend data.
+
+Do not hardcode sample values in production.
+
+Provide proper empty states when no data exists.
+
+---
+
+# 5. CARD INVENTORY MANAGEMENT
+
+Create a complete inventory page.
+
+Initially support 50 cards.
+
+Card IDs must follow this format:
+
+TR001
+TR002
+TR003
+...
+TR050
+
+Every card must have:
+
+- Unique database ID.
+- Permanent card ID.
+- Unique redirect slug.
+- Permanent redirect URL.
+- QR image path.
+- Status.
+- Assigned business ID, if activated.
+- Created date.
+- Activated date.
+- Deactivated date.
+
+Card statuses:
+
+AVAILABLE
+ACTIVATED
+DEACTIVATED
+
+Rules:
+
+AVAILABLE:
+- Can be activated.
+- Cannot be assigned to two businesses.
+
+ACTIVATED:
+- Permanently belongs to its assigned business.
+- Cannot be reassigned.
+- Cannot be deleted.
+- Can have its destination edited for the same business.
+
+DEACTIVATED:
+- Redirect is disabled.
+- Remains permanently assigned.
+- Cannot be assigned to another business.
+
+Provide:
+
+- Search by card ID.
+- Filter by status.
+- Sort by creation date.
+- Pagination.
+- Card details view.
+- QR preview.
+- Download QR image.
+- View associated business.
+- View scan statistics.
+
+Create a confirmation modal for irreversible actions.
+
+Use backend validation to enforce permanent assignment.
+
+---
+
+# 6. BUSINESS MANAGEMENT
+
+Create a business management page.
+
+Business fields:
+
+- Business ID.
+- Business name.
+- Business category.
+- Owner/contact name.
+- Phone number.
+- Email (optional).
+- Address (optional).
+- Google Review URL.
+- Assigned card ID.
+- Activation date.
+- Notes.
+
+Features:
+
+- Add business.
+- View business details.
+- Edit contact information.
+- Search businesses.
+- Filter by category.
+- View assigned card.
+- View total scans.
+- View activation history.
+- Update Google Review URL for the same business.
+
+Important:
+Business ownership of a card is permanent. Editing the business name or contact details must not change its card ID or QR URL.
+
+Validate Google Review URLs before saving.
+
+Do not accept arbitrary dangerous URL schemes. Only allow HTTPS URLs.
+
+---
+
+# 7. CARD ACTIVATION WORKFLOW
+
+This is one of the most important modules.
+
+Create a dedicated Activate Card page.
+
+Step 1:
+Select an available physical card from the inventory.
+
+Step 2:
+Enter business information.
+
+Step 3:
+Enter the Google Review URL.
+
+Step 4:
+Display a preview:
+
+- Selected card ID.
+- QR code.
+- Business name.
+- Google Review destination.
+
+Step 5:
+Show confirmation:
+
+"Are you sure you want to permanently assign this card to this business?"
+
+Step 6:
+On confirmation:
+
+- Create the business record.
+- Assign the card.
+- Set card status to ACTIVATED.
+- Save activation timestamp.
+- Store Google Review destination.
+- Record the admin action.
+- Update dashboard metrics.
+
+Use a database transaction or atomic server-side operation to prevent duplicate assignments.
+
+If activation fails, do not partially create records.
+
+After successful activation show:
+
+"Card activated successfully!"
+
+Include:
+- Card ID.
+- Business name.
+- QR URL.
+- NFC URL.
+- Google Review destination.
+- Test redirect button.
+
+---
+
+# 8. DYNAMIC QR REDIRECT SYSTEM
+
+This is the core functionality.
+
+Every card has a unique permanent redirect URL.
+
+Example:
+
+https://yourdomain.com/r/TR001
+
+The QR code contains this URL.
+
+The NFC chip contains this same URL.
+
+When a customer scans or taps:
+
+1. Flask receives the request.
+2. Extract the card ID from the URL.
+3. Look up the card in Supabase.
+4. Check whether the card is ACTIVATED.
+5. Check whether the assigned business exists.
+6. Retrieve that business's Google Review URL.
+7. Record a scan event.
+8. Redirect the customer to the destination.
+
+Use an HTTP 302 redirect so the destination can change without changing the printed QR code.
+
+If the card is AVAILABLE:
+Display a simple "This card is not activated yet" page.
+
+If the card is DEACTIVATED:
+Display a friendly "This review card is currently inactive" page.
+
+If the card ID does not exist:
+Return a proper 404 page.
+
+IMPORTANT:
+Never redirect to an arbitrary URL supplied through a query parameter. Always retrieve the trusted destination from the database.
+
+---
+
+# 9. QR CODE GENERATION
+
+Create a QR generation module for the initial 50 cards.
+
+Each QR code must contain:
+
+https://yourdomain.com/r/TR001
+
+Generate 50 unique QR images.
+
+Requirements:
+
+- High error correction.
+- Black QR modules on a white background.
+- Adequate quiet zone.
+- High-resolution PNG.
+- Print-friendly quality.
+- Minimum 300 DPI when prepared for print.
+- Maintain QR readability.
+- Avoid unnecessary logos inside the QR.
+- Do not distort QR dimensions.
+
+Store the generated images in a structured folder:
+
+qr_codes/
+    TR001.png
+    TR002.png
+    TR003.png
+    ...
+    TR050.png
+
+Create features:
+
+- Preview QR code.
+- Download individual QR.
+- Download all 50 as a ZIP file.
+- Export card ID and redirect URL CSV.
+- Generate a print-production sheet with QR codes and card IDs.
+- Regenerate images only when the original QR URL configuration changes before production.
+
+After manufacturing, QR URL and card ID must be immutable.
+
+CRITICAL:
+The production QR domain must be configured before printing. Do not use localhost URLs for physical cards.
+
+---
+
+# 10. NFC MANAGEMENT
+
+The application does not need direct hardware access to NFC chips.
+
+Instead, provide an NFC programming workflow.
+
+For every card display:
+
+Card ID: TR001
+
+NFC URL:
+https://yourdomain.com/r/TR001
+
+Provide:
+- Copy NFC URL button.
+- Mark NFC programmed button.
+- NFC programming status.
+- Programming date.
+- Test URL button.
+
+Statuses:
+
+NOT_PROGRAMMED
+PROGRAMMED
+TESTED
+
+Provide instructions for using NFC Tools or a compatible NFC writing application.
+
+The admin manually writes the same redirect URL into the NFC chip that appears in the QR code.
+
+Do not claim the web app can write NFC chips directly unless an actual supported hardware integration is implemented.
+
+---
+
+# 11. ANALYTICS
+
+Track:
+
+- Total scans.
+- Scans per card.
+- Scans per business.
+- Daily scans.
+- Weekly scans.
+- Monthly scans.
+- Most popular cards.
+- QR/NFC traffic source when reliably distinguishable.
+
+Important:
+A normal redirect URL cannot reliably identify whether a visitor arrived by QR or NFC if both use exactly the same URL.
+
+Do not fabricate this distinction.
+
+Optional advanced feature:
+Use separate tracking URLs for QR and NFC if the business owner later approves different URLs. For the current product, both should use the same URL.
+
+Record:
+
+- Card ID.
+- Timestamp.
+- User agent.
+- Referrer, if available.
+- Anonymized IP or privacy-conscious scan identifier.
+
+Avoid storing unnecessary personal information.
+
+Protect analytics endpoints from unauthorized access.
+
+Provide charts using Recharts.
+
+---
+
+# 12. ADMIN AUTHENTICATION AND SECURITY
+
+This is a private single-admin application.
+
+Implement secure authentication.
+
+Requirements:
+
+- Login page.
+- Secure password hashing or Supabase Auth.
+- Protected frontend routes.
+- Protected backend admin endpoints.
+- Secure session or token management.
+- Logout.
+- Environment-based credentials.
+- Rate limiting.
+- Input validation.
+- SQL injection protection.
+- CORS restricted to the deployed frontend origin.
+- HTTPS in production.
+- No hardcoded secrets.
+
+Use Supabase Row Level Security where applicable.
+
+Only the authenticated administrator can:
+- View businesses.
+- Activate cards.
+- Edit destinations.
+- Deactivate cards.
+- View analytics.
+- Manage inventory.
+
+The public redirect endpoint should only expose the minimum information necessary to perform a redirect.
+
+---
+
+# 13. DATABASE DESIGN
+
+Create Supabase PostgreSQL tables.
+
+TABLE: cards
+
+Fields:
+- id: UUID primary key
+- card_code: unique text
+- slug: unique text
+- redirect_url: unique text
+- status: text
+- business_id: nullable UUID
+- qr_image_path: text
+- nfc_status: text
+- created_at: timestamp
+- activated_at: nullable timestamp
+- deactivated_at: nullable timestamp
+
+TABLE: businesses
+
+Fields:
+- id: UUID primary key
+- business_name: text
+- category: text
+- contact_name: text
+- phone: text
+- email: nullable text
+- address: nullable text
+- google_review_url: text
+- notes: nullable text
+- created_at: timestamp
+
+TABLE: scan_events
+
+Fields:
+- id: UUID primary key
+- card_id: UUID
+- scanned_at: timestamp
+- user_agent: text
+- referrer: nullable text
+- source: nullable text
+
+TABLE: admin_logs
+
+Fields:
+- id: UUID primary key
+- action: text
+- card_id: nullable UUID
+- business_id: nullable UUID
+- description: text
+- created_at: timestamp
+
+Add appropriate indexes, foreign keys, unique constraints and validation rules.
+
+IMPORTANT:
+Implement a database-level safeguard or secure server-side transaction that prevents an activated card from being assigned to another business.
+
+Initialize the first 50 card records using a database seed script.
+
+---
+
+# 14. BACKEND API ENDPOINTS
+
+Implement working REST APIs.
+
+Authentication:
+
+POST /api/auth/login
+POST /api/auth/logout
+GET /api/auth/me
+
+Cards:
+
+GET /api/cards
+GET /api/cards/<card_id>
+POST /api/cards/seed
+GET /api/cards/available
+GET /api/cards/<card_id>/qr
+GET /api/cards/download-all
+
+Businesses:
+
+GET /api/businesses
+POST /api/businesses
+GET /api/businesses/<business_id>
+PUT /api/businesses/<business_id>
+
+Activation:
+
+POST /api/cards/activate
+POST /api/cards/<card_id>/deactivate
+
+QR and redirects:
+
+GET /r/<slug>
+
+Analytics:
+
+GET /api/analytics/overview
+GET /api/analytics/cards
+GET /api/analytics/businesses
+GET /api/analytics/trends
+
+NFC:
+
+GET /api/cards/<card_id>/nfc
+POST /api/cards/<card_id>/nfc-status
+
+All endpoints must:
+- Validate input.
+- Return proper HTTP status codes.
+- Handle errors.
+- Enforce authentication where required.
+- Return consistent JSON responses.
+
+Do not expose admin-only endpoints publicly.
+
+---
+
+# 15. SETTINGS
+
+Add an admin settings page.
+
+Settings:
+
+- Website name.
+- Public redirect domain.
+- Admin profile.
+- QR default configuration.
+- Default timezone: Asia/Kolkata.
+- Business information.
+- Backup/export options.
+
+Allow exporting:
+- Business records CSV.
+- Card inventory CSV.
+- Scan analytics CSV.
+- Complete backup JSON.
+
+---
+
+# 16. ERROR HANDLING AND USER EXPERIENCE
+
+Create:
+- Loading states.
+- Success notifications.
+- Error notifications.
+- Confirmation dialogs.
+- Empty states.
+- Form validation.
+- Network error handling.
+- Responsive tables.
+- Mobile-friendly cards.
+
+Never show fake successful messages.
+
+Only display success after the backend confirms the operation.
+
+Prevent duplicate form submissions.
+
+Prevent accidental permanent card assignment.
+
+---
+
+# 17. PROJECT STRUCTURE
+
+Use a clean modular architecture.
+
+TapReview/
+│
+├── backend/
+│   ├── app.py
+│   ├── config.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   ├── routes/
+│   │   ├── auth.py
+│   │   ├── cards.py
+│   │   ├── businesses.py
+│   │   ├── redirects.py
+│   │   ├── analytics.py
+│   │   └── nfc.py
+│   ├── services/
+│   │   ├── qr_service.py
+│   │   ├── card_service.py
+│   │   ├── redirect_service.py
+│   │   └── analytics_service.py
+│   ├── database/
+│   │   ├── supabase_client.py
+│   │   └── seed_cards.py
+│   └── tests/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── layouts/
+│   │   ├── services/
+│   │   ├── hooks/
+│   │   ├── context/
+│   │   ├── utils/
+│   │   └── App.jsx
+│   └── package.json
+│
+├── qr_codes/
+├── docs/
+├── README.md
+└── .gitignore
+
+---
+
+# 18. TESTING REQUIREMENTS
+
+Create backend unit tests and integration tests.
+
+Test:
+
+1. Generate 50 unique card IDs.
+2. Generate 50 unique QR URLs.
+3. Ensure no duplicate card IDs.
+4. Activate TR001 for Restaurant A.
+5. Scan TR001 and verify Restaurant A destination.
+6. Activate TR002 for Salon B.
+7. Scan TR002 and verify Salon B destination.
+8. Update Restaurant A's Google Review link.
+9. Scan TR001 again and verify the new destination.
+10. Ensure TR001 cannot be reassigned to another business.
+11. Ensure deactivated cards do not redirect.
+12. Ensure available cards do not redirect.
+13. Ensure unknown card IDs return 404.
+14. Ensure unauthorized users cannot access admin APIs.
+15. Ensure QR and NFC URLs match exactly.
+16. Ensure concurrent activation requests cannot assign one card twice.
+
+Test the system using real database operations, not mocked success responses alone.
+
+---
+
+# 19. DEPLOYMENT
+
+Prepare deployment instructions.
+
+Frontend:
+- Build React production bundle.
+- Configure API base URL.
+- Deploy frontend.
+
+Backend:
+- Configure Render.
+- Install requirements.
+- Configure environment variables.
+- Deploy Flask application using a production WSGI server such as Gunicorn.
+
+Database:
+- Create Supabase project.
+- Run SQL migrations.
+- Configure RLS.
+- Initialize 50 cards.
+
+Domain:
+- Configure custom domain.
+- Enable HTTPS.
+- Verify redirect URLs.
+- Generate QR codes only after the final domain is configured.
+
+Production verification:
+- Scan physical QR code.
+- Tap physical NFC card.
+- Verify both reach the same business review page.
+- Update a review destination.
+- Verify the same printed card redirects correctly.
+
+---
+
+# 20. DEVELOPMENT EXECUTION INSTRUCTIONS
+
+Work in clearly defined development phases.
+
+PHASE 1:
+Build project setup, backend structure, frontend structure and database schema.
+
+PHASE 2:
+Implement authentication, card inventory and 50-card initialization.
+
+PHASE 3:
+Implement unique QR generation and print exports.
+
+PHASE 4:
+Implement business management and permanent card activation.
+
+PHASE 5:
+Implement dynamic QR/NFC redirects.
+
+PHASE 6:
+Implement analytics and reporting.
+
+PHASE 7:
+Implement tests, security and deployment.
+
+For every phase:
+
+- Create actual working source code.
+- Create all necessary files.
+- Install or specify dependencies.
+- Connect frontend to backend.
+- Connect backend to Supabase.
+- Explain environment variables.
+- Explain how to run the project.
+- Test the implemented features.
+- Fix errors before proceeding.
+
+Do not leave TODO placeholders for core functionality.
+
+Do not use dummy business records as real production data.
+
+Do not generate fake analytics.
+
+Do not skip backend implementation.
+
+Do not claim a feature is complete without testing it.
+
+Start with PHASE 1. Inspect the existing project directory before creating files. Preserve any existing working code.
+
+The final objective is a fully operational private admin application that allows the owner of TapReview to manufacture 50 NFC cards in advance, visit local businesses, activate individual cards in person, and manage all QR/NFC redirections through one private dashboard.
