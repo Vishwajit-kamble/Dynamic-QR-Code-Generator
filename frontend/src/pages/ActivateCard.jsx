@@ -136,9 +136,9 @@ export default function ActivateCard() {
             <Zap className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">In-Person Card Activation</h2>
+            <h2 className="text-xl font-bold text-slate-900">Card Activation Wizard</h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Permanently link a manufactured NFC review card to a local business partner.
+              Permanently link a review card QR code to a business partner.
             </p>
           </div>
         </div>
@@ -517,7 +517,7 @@ export default function ActivateCard() {
             </div>
             <div>
               <span className="text-[11px] font-semibold text-slate-400 block mb-1">
-                Permanent QR / NFC URL:
+                Permanent QR Redirect URL:
               </span>
               <div className="flex items-center gap-2">
                 <input
@@ -547,6 +547,13 @@ export default function ActivateCard() {
             >
               <ExternalLink className="w-4 h-4" />
               <span>Test Dynamic Redirect</span>
+            </a>
+            <a
+              href={`/api/cards/${activationResult.card_id}/qr?download=true`}
+              className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-sm rounded-xl inline-flex items-center gap-2"
+            >
+              <CreditCard className="w-4 h-4 text-teal-600" />
+              <span>Download QR (PNG)</span>
             </a>
             <Link
               to="/inventory"

@@ -103,7 +103,7 @@ export default function Businesses() {
         <div>
           <h2 className="text-xl font-bold text-slate-900">Assigned Businesses</h2>
           <p className="text-sm text-slate-500 mt-0.5">
-            Directory of businesses with permanently assigned TapReview NFC cards.
+            Directory of businesses with permanently assigned review QR cards.
           </p>
         </div>
         <div className="text-sm text-slate-600 bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl">

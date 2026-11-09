@@ -56,14 +56,14 @@ export default function DashboardLayout() {
         <div className="h-16 px-6 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-sm shadow-teal-600/30">
-              <Radio className="w-5 h-5 animate-pulse" />
+              <QrCode className="w-5 h-5" />
             </div>
             <div>
               <span className="font-bold text-lg tracking-tight text-navy-900 block leading-tight">
                 TapReview
               </span>
               <span className="text-[11px] font-medium text-slate-400 block tracking-wider uppercase">
-                Admin Console
+                QR Review Engine
               </span>
             </div>
           </div>
@@ -142,7 +142,7 @@ export default function DashboardLayout() {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="text-base font-semibold text-slate-800 hidden sm:block">
-              NFC &amp; Dynamic QR Review Card Management
+              Dynamic QR Google Review Card Platform
             </h1>
           </div>
 

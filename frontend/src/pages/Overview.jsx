@@ -121,11 +121,11 @@ export default function Overview() {
       desc: 'Active business partners',
     },
     {
-      title: 'Total QR / NFC Scans',
+      title: 'Total QR Scans',
       value: data?.total_scans ?? 0,
       icon: ScanLine,
       color: 'text-cyan-700 bg-cyan-50',
-      desc: 'Real customer tap & scans',
+      desc: 'Real customer review scans',
     },
   ];
 
@@ -150,7 +150,7 @@ export default function Overview() {
         <div>
           <h2 className="text-xl font-bold text-slate-900">Dashboard Overview</h2>
           <p className="text-sm text-slate-500 mt-0.5">
-            Real-time status for 50 manufactured NFC Google Review cards.
+            Real-time status for 50 dynamic Google Review QR cards.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

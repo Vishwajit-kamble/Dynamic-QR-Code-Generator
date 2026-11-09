@@ -23,7 +23,6 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [nfcFilter, setNfcFilter] = useState('');
   const [selectedCard, setSelectedCard] = useState(null);
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -34,7 +33,6 @@ export default function Inventory() {
       setLoading(true);
       const params = {};
       if (statusFilter) params.status = statusFilter;
-      if (nfcFilter) params.nfc_status = nfcFilter;
       if (search) params.search = search;
 
       const res = await api.get('/api/cards', { params });
@@ -50,7 +48,7 @@ export default function Inventory() {
 
   useEffect(() => {
     fetchCards();
-  }, [statusFilter, nfcFilter]);
+  }, [statusFilter]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -123,9 +121,9 @@ export default function Inventory() {
       {/* Header */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Card Inventory (50 Units)</h2>
+          <h2 className="text-xl font-bold text-slate-900">QR Review Cards (50 Units)</h2>
           <p className="text-sm text-slate-500 mt-0.5">
-            Manage permanent card IDs, preprinted QR URLs, and NFC chip programming states.
+            Manage permanent QR codes, redirect URLs, and business review assignments.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -173,20 +171,6 @@ export default function Inventory() {
               <option value="DEACTIVATED">Deactivated</option>
             </select>
           </div>
-
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5">
-            <Radio className="w-3.5 h-3.5 text-slate-400" />
-            <select
-              value={nfcFilter}
-              onChange={(e) => setNfcFilter(e.target.value)}
-              className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer"
-            >
-              <option value="">All NFC States</option>
-              <option value="NOT_PROGRAMMED">Not Programmed</option>
-              <option value="PROGRAMMED">Programmed</option>
-              <option value="TESTED">Tested</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -211,7 +195,6 @@ export default function Inventory() {
                   <th className="px-5 py-3.5 font-bold">Card ID</th>
                   <th className="px-5 py-3.5 font-bold">Status</th>
                   <th className="px-5 py-3.5 font-bold">Assigned Business</th>
-                  <th className="px-5 py-3.5 font-bold">NFC Chip</th>
                   <th className="px-5 py-3.5 font-bold">Scans</th>
                   <th className="px-5 py-3.5 font-bold text-right">Actions</th>
                 </tr>
@@ -270,20 +253,6 @@ export default function Inventory() {
                         ) : (
                           <span className="text-xs text-slate-400 italic">Not assigned yet</span>
                         )}
-                      </td>
-
-                      <td className="px-5 py-3.5">
-                        <span
-                          className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                            card.nfc_status === 'TESTED'
-                              ? 'bg-blue-50 text-blue-700'
-                              : card.nfc_status === 'PROGRAMMED'
-                              ? 'bg-amber-50 text-amber-700'
-                              : 'bg-slate-100 text-slate-500'
-                          }`}
-                        >
-                          {card.nfc_status}
-                        </span>
                       </td>
 
                       <td className="px-5 py-3.5 font-bold text-slate-900">
@@ -387,7 +356,7 @@ export default function Inventory() {
                       className="px-2.5 py-1 text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 rounded-lg flex items-center gap-1 text-slate-700"
                     >
                       {copiedUrl ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                      <span>{copiedUrl ? 'Copied!' : 'Copy NFC URL'}</span>
+                      <span>{copiedUrl ? 'Copied!' : 'Copy URL'}</span>
                     </button>
                     <a
                       href={`/api/cards/${selectedCard.id}/qr?download=true`}
@@ -395,6 +364,15 @@ export default function Inventory() {
                     >
                       <Download className="w-3 h-3" />
                       <span>Download PNG</span>
+                    </a>
+                    <a
+                      href={`/r/${selectedCard.card_code}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2.5 py-1 text-xs font-semibold bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-800 rounded-lg flex items-center gap-1"
+                    >
+                      <ExternalLink className="w-3 h-3 text-slate-500" />
+                      <span>Test Redirect</span>
                     </a>
                   </div>
                 </div>
@@ -428,32 +406,6 @@ export default function Inventory() {
                   </div>
                 </div>
               )}
-
-              {/* NFC Programming Status Controls */}
-              <div className="p-4 border border-slate-200 rounded-xl space-y-2">
-                <span className="text-xs font-bold text-slate-700 uppercase block">
-                  NFC Chip Programming Status
-                </span>
-                <p className="text-xs text-slate-500">
-                  Update hardware writing status after writing URL with NFC Tools app.
-                </p>
-                <div className="flex gap-2 pt-1">
-                  {['NOT_PROGRAMMED', 'PROGRAMMED', 'TESTED'].map((st) => (
-                    <button
-                      key={st}
-                      disabled={actionLoading}
-                      onClick={() => handleUpdateNfcStatus(selectedCard.id, st)}
-                      className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                        selectedCard.nfc_status === st
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                      }`}
-                    >
-                      {st}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
 
             <div className="pt-3 border-t border-slate-100 flex justify-end">
