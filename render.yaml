@@ -12,7 +12,7 @@ services:
       - key: ADMIN_EMAIL
         value: admin@tapreview.com
       - key: ADMIN_PASSWORD
-        value: AdminTapReview2026!
+        sync: false
       - key: TIMEZONE
         value: Asia/Kolkata
       - key: PUBLIC_REDIRECT_BASE_URL
@@ -21,4 +21,3 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_KEY
         sync: false
-
